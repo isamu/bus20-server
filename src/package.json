@@ -1,7 +1,7 @@
 {
-  "name": "aws_sam_sample",
+  "name": "bus20-server",
   "version": "1.0.0",
-  "description": "aws sam sample",
+  "description": "bus 20 server",
   "main": "app.js",
   "repository": "https://github.com/isamu/aws_sam_sample",
   "author": "isamu arimoto",
