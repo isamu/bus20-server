@@ -10,9 +10,10 @@ describe('Tests index', function () {
   
   it('verifies successful user model', async () => {
     const graph = new models.Graph;
+    graph.generateRandom();
     // expect(getdata).to.be.an('object');
     expect("aa").to.be.equal("aa");
     // expect(getdata.getData().name).to.be.equal("hoge");
-    console.log(JSON.stringify(graph.to_data(), undefined, 1));
+    // console.log(JSON.stringify(graph.to_data(), undefined, 1));
   });
 });

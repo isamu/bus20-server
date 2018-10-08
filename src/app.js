@@ -4,6 +4,7 @@ const testController = require ("controllers/test")
 
 lambdaRouter.setRoutes([
   {method: "GET", path: "test", func: testController.test},
+  {method: "GET", path: "kumamoto", func: testController.test2},
 ]);
 
 lambdaRouter.setResponseHandlers({

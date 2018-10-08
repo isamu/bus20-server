@@ -15,6 +15,9 @@ class Node {
     return Math.sqrt(dx * dx + dy * dy)
   }
 
+  appendEdge(_edge) {
+    this.data.edges.push(_edge);
+  }
   to_data(){
     const data = {
       locations: {

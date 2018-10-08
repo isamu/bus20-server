@@ -3,6 +3,12 @@ const Edge = require("./Edge");
 
 class Graph {
   constructor(data) {
+    this.data = {
+      nodes: [],
+    }
+  }
+
+  generateRandom(data = {}) {
     const w = data.w || 10;
     const h = data.h || 10;
     const unit = 1;
@@ -44,7 +50,33 @@ class Graph {
   to_json() {
     return JSON.stringify(this.to_data(), undefined, 1)
   }
+
+  appendNode(_node) {
+    const node = new Node({
+      location: {
+        x: _node.lat,
+        y: _node.lon
+      },
+      id: _node.id,
+      edges: []
+    });
+
+    this.data.nodes.push(node)
+  }
+
+  compact() {
+    this.data.nodes = this.data.nodes.filter((node) => {
+      return !!(node.edges && node.getData().edges.length > 0)
+    });
+  }
+  getNode(index) {
+    return this.data.nodes[index];
+  }
   
+  updateLength() {
+    Graph.updateLength(this.data.nodes)
+  }
+
   static updateLength(nodes) {
     return nodes.map((node) => {
       return node.edges().map((edge) => {
