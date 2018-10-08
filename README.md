@@ -1,5 +1,6 @@
-# test server for bus20
+# test server for Bus 2.0
 
+Bus 2.0 is https://github.com/snakajima/bus20 
 This is based on https://github.com/isamu/aws_sam_sample
 
 ## install sam tool
