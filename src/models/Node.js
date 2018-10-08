@@ -20,7 +20,7 @@ class Node {
   }
   to_data(){
     const data = {
-      locations: {
+      location: {
         x: this.data.location.x,
         y: this.data.location.y,
       },

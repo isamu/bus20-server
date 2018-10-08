@@ -15,7 +15,7 @@ const test =  (file) => {
       filePath: file,
       endDocument: function(){
         graph.updateLength();
-        graph.compact();
+        // graph.compact();
         resolve(graph);
       },
       bounds: function(bounds){
