@@ -68,8 +68,11 @@ const test =  (file) => {
     var parser = osmread.parse({
       filePath: file,
       endDocument: function(){
+        //console.log(graph.getData().nodes.length);
         graph.compact();
         graph.updateLength();
+        graph.deleteUnConnected();
+        // console.log(graph.getData().nodes.length);
         resolve(graph);
       },
       bounds: function(bounds){

@@ -145,6 +145,8 @@ class Graph {
   compact() {
     this.removeStraightRoad();
     this.deleteUnusedNode();
+    this.checkAllpath();
+    this.deleteUnConnected();
     this.resetNodeEdge();
   }
   
@@ -173,6 +175,24 @@ class Graph {
     });
   }
 
+  checkAllpath(__node) {
+    const current = __node || this.data.nodeObj[Object.keys(this.data.nodeObj)[0]]
+    current.setMark();
+    current.edges().map((edge) => {
+      const node = this.data.nodeObj[edge.to_id()];
+      if (!node.getMark()) {
+        this.checkAllpath(node);
+      }
+    });
+  }
+  deleteUnConnected() {
+    Object.keys(this.data.nodeObj).map((key) => {
+      if (!this.data.nodeObj[key].getMark()) {
+        delete this.data.nodeObj[key];
+        // console.log(key);
+      }
+    });
+  }
 }
 
 module.exports = Graph;
