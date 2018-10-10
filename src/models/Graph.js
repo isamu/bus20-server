@@ -5,6 +5,8 @@ class Graph {
   constructor(data) {
     this.data = {
       nodes: [],
+      nodeObj: {},
+      ways: [],
     }
   }
 
@@ -51,6 +53,10 @@ class Graph {
     return JSON.stringify(this.to_data(), undefined, 1)
   }
 
+  getData() {
+    return this.data;
+  }
+  
   appendNode(_node) {
     const node = new Node({
       location: {
@@ -60,17 +66,96 @@ class Graph {
       id: _node.id,
       edges: []
     });
-
-    this.data.nodes.push(node)
+    this.data.nodeObj[_node.id] = node;
+    return node;
   }
+  appendWay(_way) {
+    this.data.ways.push(_way);
+  }
+  removeStraightRoad() {
+    this.data.ways.forEach((way) => {
+      
+      let status = 0; //0 start,
+      let start_node = null;
+      if (way.nodeRefs.length > 2) {
+        for(let i = 0; i < way.nodeRefs.length -1; i ++){
+          const node0_id = way.nodeRefs[i];
+          const node1_id = way.nodeRefs[i + 1];
+          const node0 = this.getNodeById(node0_id)
+          const node1 = this.getNodeById(node1_id);
 
-  compact() {
-    this.data.nodes = this.data.nodes.filter((node) => {
-      return !!(node.edges && node.getData().edges.length > 0)
+          if (status === 0) {
+            if (node0 && node1 && node1.edges().length === 2) {
+              // todo remove node1 edge
+              node0.removeEdge(node1_id);
+              start_node = node0;
+              status = 1;
+            }
+          } else if (status == 1) {
+            this.deleteNodeById(node0_id);
+            if (node1.edges().length !== 2 || i === way.nodeRefs.length - 2) {
+              // end of this
+              node1.removeEdge(node0_id);
+              
+              const from_node_id = start_node.getData()["id"];
+              const to_node_id = node1.getData()["id"];
+              
+              if (from_node_id === to_node_id && start_node.edges().length === 0 && node1.edges().length === 0 && way.nodeRefs.length !== 2) {
+                // close loop for example leisure is park
+                this.deleteNodeById(from_node_id);
+                this.deleteNodeById(to_node_id);
+              } else {
+                const unit = 1;
+                const edge0 = new Edge({from_id: from_node_id, to_id: to_node_id, length: unit});
+                const edge1 = new Edge({from_id: to_node_id, to_id: from_node_id, length: unit});
+                start_node.appendEdge(edge0);
+              node1.appendEdge(edge1);
+              }
+              status = 0;
+            }
+          }
+        }
+      }
     });
   }
+  deleteUnusedNode() {
+    // remove unsed node
+    Object.keys(this.data.nodeObj).forEach((key) => {
+      if (this.data.nodeObj[key].edges().length === 0) {
+        delete this.data.nodeObj[key];
+      }
+    });
+  }
+  resetNodeEdge() {
+    this.data.nodes = [];
+    let i = 0;
+    const node_ids = {}
+    Object.keys(this.data.nodeObj).forEach((key) => {
+      const node = this.data.nodeObj[key];
+      this.data.nodes[i] = node;
+      node_ids[node.getData().id] = i;
+      i ++;
+    });
+    this.data.nodes.map((node) => {
+      node.edges().map((edge) => {
+        edge.conv_id_to_index(node_ids)
+      });
+    });
+  }
+  compact() {
+    this.removeStraightRoad();
+    this.deleteUnusedNode();
+    this.resetNodeEdge();
+  }
+  
   getNode(index) {
     return this.data.nodes[index];
+  }
+  getNodeById(id) {
+    return this.data.nodeObj[id];
+  }
+  deleteNodeById(id) {
+    delete this.data.nodeObj[id];
   }
   
   updateLength() {

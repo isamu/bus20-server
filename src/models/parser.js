@@ -4,47 +4,98 @@ const Edge = require("./Edge");
 
 const osmread = require("osm-read");
 
+const wayIsRoad = (way) => {
+  if (way.tags.leisure === "park") {
+    return false;
+  }
+  if (way.tags.highway) {
+    return true;
+  }
+  if (way.tags.building) {
+    return false;
+  }
+  if (way.tags.parking) {
+    return false;
+  }
+  if (way.tags.amenity) {
+    return false;
+  }
+  if (way.tags.barrier) {
+    return false;
+  }
+  if (way.tags.bench) {
+    return false;
+  }
+  if (way.tags.forest) {
+    return false;
+  }
+  if (way.tags.landuse) {
+    return false;
+  }
+  if (way.tags.railway) {
+    return false;
+  }
+  if (way.tags.waterway) {
+    return false;
+  }
+  if (way.tags.natural) {
+    return false;
+  }
+  if (way.tags.leisure) {
+    return false;
+  }
+  if (way.tags.man_made) {
+    return false;
+  }
+  if (way.tags['demolished:building']) {
+    return false;
+  }
+  if (way.tags.admin_level) {
+    return false;
+  }
+  if (Object.keys(way.tags).length === 0) {
+    // empty??
+    return true;
+  }
+  console.log(way.tags )
+  return true;
+};
 const test =  (file) => {
   return new Promise((resolve, reject) => {
     const graph = new Graph();
-    let node_index = 0;
     const unit = 1;
-    const node_ids = {};
 
     var parser = osmread.parse({
       filePath: file,
       endDocument: function(){
+        graph.compact();
         graph.updateLength();
-        // graph.compact();
         resolve(graph);
       },
       bounds: function(bounds){
         //console.log('bounds: ' + JSON.stringify(bounds));
       },
       node: function(node){
-        graph.appendNode(node);
-        node_ids[node.id] = node_index;
-        node_index ++;
+        const node_instance = graph.appendNode(node);
       },
       way: function(way){
-        if (way.nodeRefs && way.nodeRefs.length > 1) {
+        if (wayIsRoad(way) && way.nodeRefs && way.nodeRefs.length > 1) {
+          graph.appendWay(way);
           for(let i = 0; i < way.nodeRefs.length -1; i ++){
             const node0_id = way.nodeRefs[i];
             const node1_id = way.nodeRefs[i + 1];
-            const node0_index = node_ids[node0_id];
-            const node1_index = node_ids[node1_id];
             
-            const edge0 = new Edge({from: node0_index, to: node1_index, length: unit});
-            const edge1 = new Edge({from: node1_index, to: node0_index, length: unit});
+            const edge0 = new Edge({from_id: node0_id, to_id: node1_id, length: unit});
+            const edge1 = new Edge({from_id: node1_id, to_id: node0_id, length: unit});
 
-            const node0 = graph.getNode(node0_index);
+            const node0 = graph.getNodeById(node0_id)
             node0.appendEdge(edge0);
-
-            const node1 = graph.getNode(node1_index);
+            
+            const node1 = graph.getNodeById(node1_id);
             node1.appendEdge(edge1);
           }
         } else {
-          console.log("NG");
+          // console.log("NG");
         }
       },
       relation: function(relation){

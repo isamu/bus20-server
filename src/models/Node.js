@@ -14,9 +14,14 @@ class Node {
     const dy = to.getData().location.y - this.data.location.y
     return Math.sqrt(dx * dx + dy * dy)
   }
-
+  
   appendEdge(_edge) {
     this.data.edges.push(_edge);
+  }
+  removeEdge(id) {
+    this.data.edges = this.data.edges.filter((edge) => {
+      return (edge.to_id() !== id);
+    });
   }
   to_data(){
     const data = {
