@@ -14,7 +14,6 @@ class Node {
     const dy = to.getData().location.y - this.data.location.y
     return Math.sqrt(dx * dx + dy * dy)
   }
-  
   appendEdge(_edge) {
     this.data.edges.push(_edge);
   }
@@ -32,6 +31,11 @@ class Node {
       edges: this.data.edges.map((edge) => edge.to_data()),
     };
     return data;
+  }
+  updateLength(nodes) {
+    this.data.edges.map((edge) => {
+      edge.setLength(this.distance(nodes[edge.to()]));
+    });
   }
   setMark() {
     this.mark = true;

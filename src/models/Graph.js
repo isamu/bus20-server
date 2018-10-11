@@ -1,6 +1,9 @@
 const Node = require("./Node");
 const Edge = require("./Edge");
 
+
+const unit = 1;
+
 class Graph {
   constructor(data) {
     this.data = {
@@ -13,7 +16,6 @@ class Graph {
   generateRandom(data = {}) {
     const w = data.w || 10;
     const h = data.h || 10;
-    const unit = 1;
     const count = w*h;
     const nodes = [...Array(count)].map((_, index) => {
       
@@ -100,16 +102,15 @@ class Graph {
               const from_node_id = start_node.getData()["id"];
               const to_node_id = node1.getData()["id"];
               
-              if (from_node_id === to_node_id && start_node.edges().length === 0 && node1.edges().length === 0 && way.nodeRefs.length !== 2) {
+              if (from_node_id === to_node_id && start_node.edges().length === 0 && node1.edges().length === 0) {
                 // close loop for example leisure is park
                 this.deleteNodeById(from_node_id);
                 this.deleteNodeById(to_node_id);
               } else {
-                const unit = 1;
                 const edge0 = new Edge({from_id: from_node_id, to_id: to_node_id, length: unit});
                 const edge1 = new Edge({from_id: to_node_id, to_id: from_node_id, length: unit});
                 start_node.appendEdge(edge0);
-              node1.appendEdge(edge1);
+                node1.appendEdge(edge1);
               }
               status = 0;
             }
@@ -119,7 +120,6 @@ class Graph {
     });
   }
   deleteUnusedNode() {
-    // remove unsed node
     Object.keys(this.data.nodeObj).forEach((key) => {
       if (this.data.nodeObj[key].edges().length === 0) {
         delete this.data.nodeObj[key];
@@ -166,12 +166,7 @@ class Graph {
 
   static updateLength(nodes) {
     return nodes.map((node) => {
-      return node.edges().map((edge) => {
-        const node0 = nodes[edge.from()];
-        const node1 = nodes[edge.to()];
-        const length = node0.distance(node1);
-        edge.setLength(length);
-      });
+      node.updateLength(nodes);
     });
   }
 
@@ -189,7 +184,6 @@ class Graph {
     Object.keys(this.data.nodeObj).map((key) => {
       if (!this.data.nodeObj[key].getMark()) {
         delete this.data.nodeObj[key];
-        // console.log(key);
       }
     });
   }

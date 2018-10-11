@@ -11,6 +11,7 @@ describe('Tests index', function () {
   it('verifies successful parse model', async () => {
     const file = __dirname + '/../../data/map.kumamoto.xml';
     const graph = await models.parser.test(file);
+    
     // console.log(JSON.stringify(graph.to_data(), undefined, 1));
   });
 });

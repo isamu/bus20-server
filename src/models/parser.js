@@ -71,8 +71,7 @@ const test =  (file) => {
         //console.log(graph.getData().nodes.length);
         graph.compact();
         graph.updateLength();
-        graph.deleteUnConnected();
-        // console.log(graph.getData().nodes.length);
+        console.log(graph.getData().nodes.length);
         resolve(graph);
       },
       bounds: function(bounds){
