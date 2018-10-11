@@ -170,15 +170,20 @@ class Graph {
     });
   }
 
-  checkAllpath(__node) {
-    const current = __node || this.data.nodeObj[Object.keys(this.data.nodeObj)[0]]
-    current.setMark();
-    current.edges().map((edge) => {
-      const node = this.data.nodeObj[edge.to_id()];
-      if (!node.getMark()) {
-        this.checkAllpath(node);
-      }
-    });
+  checkAllpath() {
+    const init_node = this.data.nodeObj[Object.keys(this.data.nodeObj)[0]]
+    const stack = [];
+    stack.push(init_node)
+    while(stack.length > 0) {
+      const current =  stack.pop()
+      current.setMark();
+      current.edges().map((edge) => {
+        const node = this.data.nodeObj[edge.to_id()];
+        if (!node.getMark()) {
+          stack.push(node);
+        }
+      });
+    }
   }
   deleteUnConnected() {
     Object.keys(this.data.nodeObj).map((key) => {

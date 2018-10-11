@@ -58,7 +58,7 @@ const wayIsRoad = (way) => {
     return true;
   }
   console.log(way.tags )
-  return true;
+  return false;
 };
 const test =  (file) => {
   return new Promise((resolve, reject) => {

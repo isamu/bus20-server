@@ -30,6 +30,21 @@ const test2 = async (event, context, callback) => {
   return callback(null, response)
 };
 
+const test3 = async (event, context, callback) => {
+  const file = __dirname + '/../data/map.kochi.xml';
+
+  const graph = await models.parser.test(file);
+
+  const response = {
+    'statusCode': 200,
+    'body': graph.to_json(),
+    'headers': {
+      "Content-Type": "application/json"
+    },
+  };
+  return callback(null, response)
+};
+
 const errorHandler = (code) => {
   return (event) => {
     return {
