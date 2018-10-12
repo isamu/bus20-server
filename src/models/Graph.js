@@ -33,7 +33,8 @@ class Graph {
           x: unit * ((x + 1 + Math.random() * 0.75) - 0.375),
           y: unit * ((y + 1 + Math.random() * 0.75) - 0.375)
         },
-        edges: edges.filter((a) => a)
+        edges: edges.filter((a) => a),
+        type: "grid"
       });
     });
     Graph.updateLength(nodes);
@@ -59,14 +60,15 @@ class Graph {
     return this.data;
   }
   
-  appendNode(_node) {
+  appendNode(_node, type = "geo") {
     const node = new Node({
       location: {
         x: _node.lat,
         y: _node.lon
       },
       id: _node.id,
-      edges: []
+      edges: [],
+      type,
     });
     this.data.nodeObj[_node.id] = node;
     return node;
@@ -161,10 +163,10 @@ class Graph {
   }
   
   updateLength() {
-    Graph.updateLength(this.data.nodes)
+    Graph.updateLength(this.data.nodes, this.data.type)
   }
 
-  static updateLength(nodes) {
+  static updateLength(nodes, type) {
     return nodes.map((node) => {
       node.updateLength(nodes);
     });

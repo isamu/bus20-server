@@ -32,7 +32,7 @@ const test2 = async (event, context, callback) => {
 
 const test3 = async (event, context, callback) => {
   const file = __dirname + '/../data/map.kochi.xml';
-
+  
   const graph = await models.parser.test(file);
 
   const response = {
@@ -59,5 +59,6 @@ const errorHandler = (code) => {
 module.exports = {
   test,
   test2,
+  test3,
   errorHandler,
 }

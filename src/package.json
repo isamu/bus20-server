@@ -7,6 +7,7 @@
   "author": "isamu arimoto",
   "license": "MIT",
   "dependencies": {
+    "geolib": "^2.0.24",
     "lambda-router20": "0.1.1",
     "osm-read": "^0.6.0"
   },
