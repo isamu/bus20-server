@@ -151,7 +151,9 @@ class Graph {
     this.deleteUnConnected();
     this.resetNodeEdge();
   }
-  
+  setNodes(nodes) {
+    this.data.nodes = nodes;
+  }
   getNode(index) {
     return this.data.nodes[index];
   }

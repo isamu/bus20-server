@@ -9,6 +9,7 @@ const wayIsRoad = (way) => {
     return false;
   }
   if (way.tags.highway) {
+    // console.log(way.tags.highway);
     return true;
   }
   if (way.tags.building) {
@@ -57,7 +58,7 @@ const wayIsRoad = (way) => {
     // empty??
     return true;
   }
-  console.log(way.tags )
+  // console.log(way.tags )
   return false;
 };
 const test =  (file) => {
