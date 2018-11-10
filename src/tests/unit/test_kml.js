@@ -68,14 +68,14 @@ describe('Tests index', function () {
         
         const length = node0.distance(node1);
         if (!node0.hasEdge(node1_id)) {
-          const edge0 = new models.Edge({from_id: node0_id, to_id: node1_id, length: length});
+          const edge0 = new models.Edge({from: node0_id, to: node1_id, length: length});
           node0.appendEdge(edge0);
         }
         if (node0.edges().length > 2) {
           node0.setJunction();
         }
         if (!node1.hasEdge(node0_id)) {
-          const edge1 = new models.Edge({from_id: node1_id, to_id: node0_id, length: length});
+          const edge1 = new models.Edge({from: node1_id, to: node0_id, length: length});
           node1.appendEdge(edge1);
         }
         if (node1.edges().length > 2) {
@@ -173,7 +173,7 @@ describe('Tests index', function () {
       console.log("not all path");
     }
     
-    console.log(graph.to_json());
+    fs.writeFileSync("bus_stop.json" , graph.to_json())
     //Object.keys(geos).forEach((key) => {
       // findGeos(geos, key);
     //});

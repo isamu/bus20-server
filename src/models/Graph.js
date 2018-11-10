@@ -186,7 +186,7 @@ class Graph {
       const current =  stack.pop()
       current.setMark();
       current.edges().map((edge) => {
-        const node = this.data.nodeObj[edge.to_id()];
+        const node = this.data.nodeObj[edge.to()];
         if (!node.getMark()) {
           stack.push(node);
         }
