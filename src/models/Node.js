@@ -54,6 +54,9 @@ class Node {
       return edge.to_id() === id;
     });
   }
+  setJunction() {
+    this.data.junction = true;
+  }
   to_data(){
     const data = {
       location: {
@@ -62,6 +65,7 @@ class Node {
       },
       edges: this.data.edges.map((edge) => edge.to_data()),
       name: this.data.name,
+      junction: this.data.junction || false,
     };
     return data;
   }

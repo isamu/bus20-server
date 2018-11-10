@@ -153,6 +153,10 @@ class Graph {
   }
   setNodes(nodes) {
     this.data.nodes = nodes;
+    this.data.nodeObj = {};
+    nodes.forEach((node) => {
+      this.data.nodeObj[node.getIndex()] = node;
+    })
   }
   getNode(index) {
     return this.data.nodes[index];
@@ -188,6 +192,13 @@ class Graph {
         }
       });
     }
+    let ret = true
+    this.data.nodes.forEach((node) => {
+      if (!node.getMark()) {
+        ret = false;
+      }
+    });
+    return ret;
   }
   deleteUnConnected() {
     Object.keys(this.data.nodeObj).map((key) => {

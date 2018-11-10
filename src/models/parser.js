@@ -61,7 +61,8 @@ const wayIsRoad = (way) => {
   // console.log(way.tags )
   return false;
 };
-const test =  (file) => {
+
+const parse_osm_xml =  (file) => {
   return new Promise((resolve, reject) => {
     const graph = new Graph();
     const unit = 1;
@@ -112,5 +113,5 @@ const test =  (file) => {
 };
 
 module.exports = {
-  test
+  parse_osm_xml
 };
