@@ -147,7 +147,7 @@ class Graph {
   compact() {
     this.removeStraightRoad();
     this.deleteUnusedNode();
-    this.checkAllpath();
+    this.checkAllpath(true);
     this.deleteUnConnected();
     this.resetNodeEdge();
   }
@@ -178,7 +178,7 @@ class Graph {
     });
   }
 
-  checkAllpath() {
+  checkAllpath(isId=false) {
     const init_node = this.data.nodeObj[Object.keys(this.data.nodeObj)[0]]
     const stack = [];
     stack.push(init_node)
@@ -186,7 +186,8 @@ class Graph {
       const current =  stack.pop()
       current.setMark();
       current.edges().map((edge) => {
-        const node = this.data.nodeObj[edge.to()];
+        // bug to() and to_id() are ambiguous
+        const node = (isId) ?this.data.nodeObj[edge.to_id()] : this.data.nodeObj[edge.to()];
         if (!node.getMark()) {
           stack.push(node);
         }

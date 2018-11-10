@@ -11,7 +11,7 @@ describe('Tests index', function () {
   it('verifies successful parse model', async () => {
     const file = __dirname + '/../../data/map.kochi.xml';
     // const file = __dirname + '/../../data/map.kumamoto.xml';
-    const graph = await models.parser.parse_osm_xml(file);
+    const graph = await models.osm_parser.parse_osm_xml(file);
     
     // console.log(JSON.stringify(graph.to_data(), undefined, 1));
   }).timeout(1000000);
