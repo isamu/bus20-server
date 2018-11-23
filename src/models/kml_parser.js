@@ -84,6 +84,9 @@ const search_point_on_line = (line_points, points) => {
         min_length = dist;
       }
     });
+    // if (min_length > 50) {
+    // console.log(min_length);
+    // }
     if (min_index == 0) {
       // https://qiita.com/ArcCosine@github/items/12699ecb7ac40b0956c9
       // top
@@ -105,39 +108,42 @@ const search_point_on_line = (line_points, points) => {
 
 const parse_from_file = (file) => {
   const kml = new DOMParser().parseFromString(fs.readFileSync(file, 'utf8'));
-    
-  const converted = tj.kml(kml);
+  const elements = kml.getElementsByTagName("Folder");
 
   let points = [];
   const lines = [];
   let index = 0;
 
-  converted.features.forEach((feat) => {
-    if ("Point" === feat.geometry.type) {
-      const pos = feat.geometry.coordinates;
-      const pos_data = {
-        location: {
-          x: pos[0],
-          y: pos[1],
-        },
-        name: feat.properties.name,
-        edges: [],
-        type: "geo",
-      };
-      const node = nodeObj[getNodeKey(pos_data)];
-      points.push(node);
-    }
+  for(let i = 0; i  < elements.length; i++) {
+    const converted = tj.kml(elements[i]);
 
-    if ("LineString" === feat.geometry.type) {
-      lines[index] = []
-      conv_to_point(lines[index], feat.geometry.coordinates);
-      search_point_on_line(lines[index], points)
-
-      // reset data
-      index = index + 1;
-      points = [];
-    }
-  });
+    converted.features.forEach((feat) => {
+      if ("Point" === feat.geometry.type) {
+        const pos = feat.geometry.coordinates;
+        const pos_data = {
+          location: {
+            x: pos[0],
+            y: pos[1],
+          },
+          name: feat.properties.name,
+          edges: [],
+          type: "geo",
+        };
+        const node = nodeObj[getNodeKey(pos_data)];
+        points.push(node);
+      }
+      
+      if ("LineString" === feat.geometry.type) {
+        lines[index] = []
+        conv_to_point(lines[index], feat.geometry.coordinates);
+        
+        // reset data
+        index = index + 1;
+      }
+    });
+    search_point_on_line(lines[index - 1], points)
+    points = [];
+  }
 
   const nodes = []
   lines_to_graph(lines, nodes)
