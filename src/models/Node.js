@@ -18,8 +18,14 @@ class Node {
   edges() {
     return this.data.edges;
   }
+  countEdges() {
+    return this.data.edges.length;
+  }
   getData() {
     return this.data;
+  }
+  getUniqKey() {
+    return this.uniq_key;
   }
   setIndex(index) {
     this.data.index = index
@@ -80,7 +86,9 @@ class Node {
   getMark() {
     return this.mark;
   }
-  
+  getName() {
+    return this.data.name;
+  }
 }
 
 module.exports = Node;

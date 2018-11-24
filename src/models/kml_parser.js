@@ -84,9 +84,6 @@ const search_point_on_line = (line_points, points) => {
         min_length = dist;
       }
     });
-    // if (min_length > 50) {
-    // console.log(min_length);
-    // }
     if (min_index == 0) {
       // https://qiita.com/ArcCosine@github/items/12699ecb7ac40b0956c9
       // top
@@ -104,6 +101,50 @@ const search_point_on_line = (line_points, points) => {
     }
     Array.prototype.splice.apply([1,2,3], [2, 0].concat([5,5,5]))
   });
+}
+
+const check_cross = (line1, line2) => {
+  const line2_keys = line2.map((node) => {
+    return node.getUniqKey();
+  });
+  for(let i = 0; i < line1.length; i ++ ) {
+    const node1 = line1[i];
+    for(let j = 0; j < line2.length; j ++ ) {
+      const node2 = line2[j];
+      const len = node1.distance(node2);
+      // if (len < 20 && (node1.getName() == "") && (node2.getName() == "")) {
+      if (len < 20) {
+        // it's ok if nodeobj have node that no related others
+        // replace node
+        
+        if (node1.getUniqKey() != node2.getUniqKey()) {
+          line2[j] = node1;
+        }
+        // no edge data here 
+        // const prev_node2 = line2[j-1];
+        // const next_node2 = line2[j+1];
+        
+        // j == 0 case there is no prev node.
+        // if (j > 0) { 
+          // can remove ??
+
+          // prev_node2.removeEdge(node2);
+          // node2.removeEdge(prev_node2);
+
+        // }
+        // if (j < line2.length - 2) {
+          //if (next_node2.countEdges() <=  (( j + 1 == line2.length  ) ? 1 : 2)) {
+            // next_node2.removeEdge(node2);
+            // node2.removeEdge(next_node2);
+          // }
+          // next_node2.addEdge(node1);
+        // }
+        // node1.addEdge(prev_node2);
+        // node1.addEdge(next_node2);
+
+      }
+    }
+  }
 }
 
 const parse_from_file = (file) => {
@@ -143,6 +184,12 @@ const parse_from_file = (file) => {
     });
     search_point_on_line(lines[index - 1], points)
     points = [];
+  }
+
+  for(let i = 0; i < lines.length -1 ; i ++ ) {
+    for(let j = i + 1; j < lines.length ; j ++ ) {
+      check_cross(lines[i], lines[j]);
+    }
   }
 
   const nodes = []
