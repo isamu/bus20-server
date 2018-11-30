@@ -44,19 +44,21 @@ const lines_to_graph = (lines, nodes) => {
       const node1_id = node1.getIndex();
       
       const length = node0.distance(node1);
-      if (!node0.hasEdge(node1_id)) {
-        const edge0 = new Edge({from: node0_id, to: node1_id, length: length});
-        node0.appendEdge(edge0);
-      }
-      if (node0.edges().length > 2) {
-        node0.setJunction();
-      }
-      if (!node1.hasEdge(node0_id)) {
-        const edge1 = new Edge({from: node1_id, to: node0_id, length: length});
-        node1.appendEdge(edge1);
-      }
-      if (node1.edges().length > 2) {
-        node1.setJunction();
+      if (node0_id !== node1_id) {
+        if (!node0.hasEdge(node1_id)) {
+          const edge0 = new Edge({from: node0_id, to: node1_id, length: length});
+          node0.appendEdge(edge0);
+        }
+        if (node0.edges().length > 2) {
+          node0.setJunction();
+        }
+        if (!node1.hasEdge(node0_id)) {
+          const edge1 = new Edge({from: node1_id, to: node0_id, length: length});
+          node1.appendEdge(edge1);
+        }
+        if (node1.edges().length > 2) {
+          node1.setJunction();
+        }
       }
     }
   });
@@ -112,8 +114,7 @@ const check_cross = (line1, line2) => {
     for(let j = 0; j < line2.length; j ++ ) {
       const node2 = line2[j];
       const len = node1.distance(node2);
-      // if (len < 20 && (node1.getName() == "") && (node2.getName() == "")) {
-      if (len < 20) {
+      if (len < 10 &&(node1.getUniqKey() != node2.getUniqKey()) && !line2_keys.includes(node1.getUniqKey())) {
         // it's ok if nodeobj have node that no related others
         // replace node
         
@@ -123,6 +124,7 @@ const check_cross = (line1, line2) => {
         // no edge data here 
         // const prev_node2 = line2[j-1];
         // const next_node2 = line2[j+1];
+
         
         // j == 0 case there is no prev node.
         // if (j > 0) { 
@@ -182,7 +184,7 @@ const parse_from_file = (file) => {
         index = index + 1;
       }
     });
-    search_point_on_line(lines[index - 1], points)
+    // search_point_on_line(lines[index - 1], points)
     points = [];
   }
 

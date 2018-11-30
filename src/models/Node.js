@@ -52,12 +52,12 @@ class Node {
   }
   removeEdge(id) {
     this.data.edges = this.data.edges.filter((edge) => {
-      return (edge.to_id() !== id);
+      return (edge.to() !== id);
     });
   }
   hasEdge(id) {
     return !!this.data.edges.find((edge) => {
-      return edge.to_id() === id;
+      return edge.to() === id;
     });
   }
   setJunction() {
@@ -72,6 +72,7 @@ class Node {
       edges: this.data.edges.map((edge) => edge.to_data()),
       name: this.data.name,
       junction: this.data.junction || false,
+      id: this.data.index,
     };
     return data;
   }

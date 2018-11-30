@@ -59,8 +59,46 @@ class Graph {
   getData() {
     return this.data;
   }
+  getNode(index) {
+    return this.data.nodes[index];
+  }
+  updateLength() {
+    Graph.updateLength(this.data.nodes, this.data.type)
+  }
+
+  static updateLength(nodes, type) {
+    return nodes.map((node) => {
+      node.updateLength(nodes);
+    });
+  }
+
+  checkAllpath(isId=false) {
+    const init_node = this.data.nodeObj[Object.keys(this.data.nodeObj)[0]]
+    const stack = [];
+    stack.push(init_node)
+    while(stack.length > 0) {
+      const current =  stack.pop()
+      current.setMark();
+      current.edges().map((edge) => {
+        // bug to() and to_id() are ambiguous
+        const node = (isId) ? this.data.nodeObj[edge.to_id()] : this.data.nodeObj[edge.to()];
+        if (!node.getMark()) {
+          stack.push(node);
+        }
+      });
+    }
+    let ret = true
+    this.data.nodes.forEach((node) => {
+      if (!node.getMark()) {
+        ret = false;
+      }
+    });
+    return ret;
+  }
+
   
-  appendNode(_node, type = "geo") {
+  // for osm 
+  appendOsmNode(_node, type = "geo") {
     const node = new Node({
       location: {
         x: _node.lat,
@@ -71,10 +109,18 @@ class Graph {
       type,
     });
     this.data.nodeObj[_node.id] = node;
+
     return node;
   }
   appendWay(_way) {
     this.data.ways.push(_way);
+  }
+  compact() {
+    this.removeStraightRoad();
+    this.deleteUnusedNode();
+    this.checkAllpath(true);
+    this.deleteUnConnected();
+    this.resetNodeEdge();
   }
   removeStraightRoad() {
     this.data.ways.forEach((way) => {
@@ -128,6 +174,13 @@ class Graph {
       }
     });
   }
+  deleteUnConnected() {
+    Object.keys(this.data.nodeObj).map((key) => {
+      if (!this.data.nodeObj[key].getMark()) {
+        delete this.data.nodeObj[key];
+      }
+    });
+  }
   resetNodeEdge() {
     this.data.nodes = [];
     let i = 0;
@@ -144,13 +197,15 @@ class Graph {
       });
     });
   }
-  compact() {
-    this.removeStraightRoad();
-    this.deleteUnusedNode();
-    this.checkAllpath(true);
-    this.deleteUnConnected();
-    this.resetNodeEdge();
+  getNodeById(id) {
+    return this.data.nodeObj[id];
   }
+  deleteNodeById(id) {
+    delete this.data.nodeObj[id];
+  }
+  // end osm
+
+  // for kml
   setNodes(nodes) {
     this.data.nodes = nodes;
     this.data.nodeObj = {};
@@ -158,56 +213,7 @@ class Graph {
       this.data.nodeObj[node.getIndex()] = node;
     })
   }
-  getNode(index) {
-    return this.data.nodes[index];
-  }
-  getNodeById(id) {
-    return this.data.nodeObj[id];
-  }
-  deleteNodeById(id) {
-    delete this.data.nodeObj[id];
-  }
-  
-  updateLength() {
-    Graph.updateLength(this.data.nodes, this.data.type)
-  }
-
-  static updateLength(nodes, type) {
-    return nodes.map((node) => {
-      node.updateLength(nodes);
-    });
-  }
-
-  checkAllpath(isId=false) {
-    const init_node = this.data.nodeObj[Object.keys(this.data.nodeObj)[0]]
-    const stack = [];
-    stack.push(init_node)
-    while(stack.length > 0) {
-      const current =  stack.pop()
-      current.setMark();
-      current.edges().map((edge) => {
-        // bug to() and to_id() are ambiguous
-        const node = (isId) ?this.data.nodeObj[edge.to_id()] : this.data.nodeObj[edge.to()];
-        if (!node.getMark()) {
-          stack.push(node);
-        }
-      });
-    }
-    let ret = true
-    this.data.nodes.forEach((node) => {
-      if (!node.getMark()) {
-        ret = false;
-      }
-    });
-    return ret;
-  }
-  deleteUnConnected() {
-    Object.keys(this.data.nodeObj).map((key) => {
-      if (!this.data.nodeObj[key].getMark()) {
-        delete this.data.nodeObj[key];
-      }
-    });
-  }
+  // end osm
 }
 
 module.exports = Graph;

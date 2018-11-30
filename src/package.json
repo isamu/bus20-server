@@ -15,7 +15,8 @@
   },
   "scripts": {
     "test": "mocha tests/unit/",
-    "test_kml": "mocha tests/unit/test_kml_parser.js"
+    "test_kml": "mocha tests/unit/test_kml_parser.js",
+    "test_osm": "mocha tests/unit/test_osm_parser.js"
   },
   "devDependencies": {
     "chai": "^4.2.0",

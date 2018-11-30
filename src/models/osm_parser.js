@@ -61,7 +61,7 @@ const wayIsRoad = (way) => {
   // console.log(way.tags )
   return false;
 };
-
+const ways = [];
 const parse_osm_xml =  (file) => {
   return new Promise((resolve, reject) => {
     const graph = new Graph();
@@ -71,24 +71,12 @@ const parse_osm_xml =  (file) => {
       filePath: file,
       endDocument: function(){
         //console.log(graph.getData().nodes.length);
-        graph.compact();
-        graph.updateLength();
-        console.log(graph.getData().nodes.length);
-        resolve(graph);
-      },
-      bounds: function(bounds){
-        //console.log('bounds: ' + JSON.stringify(bounds));
-      },
-      node: function(node){
-        const node_instance = graph.appendNode(node);
-      },
-      way: function(way){
-        if (wayIsRoad(way) && way.nodeRefs && way.nodeRefs.length > 1) {
+        ways.forEach((way) => { 
           graph.appendWay(way);
           for(let i = 0; i < way.nodeRefs.length -1; i ++){
             const node0_id = way.nodeRefs[i];
             const node1_id = way.nodeRefs[i + 1];
-            
+
             const edge0 = new Edge({from_id: node0_id, to_id: node1_id, length: unit});
             const edge1 = new Edge({from_id: node1_id, to_id: node0_id, length: unit});
 
@@ -98,8 +86,21 @@ const parse_osm_xml =  (file) => {
             const node1 = graph.getNodeById(node1_id);
             node1.appendEdge(edge1);
           }
-        } else {
-          // console.log("NG");
+        });
+        graph.compact();
+        graph.updateLength();
+        console.log(graph.getData().nodes.length);
+        resolve(graph);
+      },
+      bounds: function(bounds){
+        //console.log('bounds: ' + JSON.stringify(bounds));
+      },
+      node: function(node){
+        const node_instance = graph.appendOsmNode(node);
+      },
+      way: function(way){
+        if (wayIsRoad(way) && way.nodeRefs && way.nodeRefs.length > 1) {
+          ways.push(way);
         }
       },
       relation: function(relation){
