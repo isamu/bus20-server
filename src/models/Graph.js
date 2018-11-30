@@ -137,7 +137,7 @@ class Graph {
           if (status === 0) {
             if (node0 && node1 && node1.edges().length === 2) {
               // todo remove node1 edge
-              node0.removeEdge(node1_id);
+              node0.removeEdgeById(node1_id);
               start_node = node0;
               status = 1;
             }
@@ -145,7 +145,7 @@ class Graph {
             this.deleteNodeById(node0_id);
             if (node1.edges().length !== 2 || i === way.nodeRefs.length - 2) {
               // end of this
-              node1.removeEdge(node0_id);
+              node1.removeEdgeById(node0_id);
               
               const from_node_id = start_node.getData()["id"];
               const to_node_id = node1.getData()["id"];

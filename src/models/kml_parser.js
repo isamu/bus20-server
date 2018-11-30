@@ -40,20 +40,20 @@ const lines_to_graph = (lines, nodes) => {
         node1.setIndex(nodes.length)
         nodes.push(node1);
       }
-      const node0_id = node0.getIndex();
-      const node1_id = node1.getIndex();
+      const node0_index = node0.getIndex();
+      const node1_index = node1.getIndex();
       
       const length = node0.distance(node1);
-      if (node0_id !== node1_id) {
-        if (!node0.hasEdge(node1_id)) {
-          const edge0 = new Edge({from: node0_id, to: node1_id, length: length});
+      if (node0_index !== node1_index) {
+        if (!node0.hasEdgeByIndex(node1_index)) {
+          const edge0 = new Edge({from: node0_index, to: node1_index, length: length});
           node0.appendEdge(edge0);
         }
         if (node0.edges().length > 2) {
           node0.setJunction();
         }
-        if (!node1.hasEdge(node0_id)) {
-          const edge1 = new Edge({from: node1_id, to: node0_id, length: length});
+        if (!node1.hasEdgeByIndex(node0_index)) {
+          const edge1 = new Edge({from: node1_index, to: node0_index, length: length});
           node1.appendEdge(edge1);
         }
         if (node1.edges().length > 2) {

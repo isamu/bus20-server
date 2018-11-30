@@ -50,14 +50,24 @@ class Node {
   appendEdge(_edge) {
     this.data.edges.push(_edge);
   }
-  removeEdge(id) {
+  removeEdgeById(id) {
     this.data.edges = this.data.edges.filter((edge) => {
-      return (edge.to() !== id);
+      return (edge.to_id() !== id);
     });
   }
-  hasEdge(id) {
+  removeEdgeByIndex(index) {
+    this.data.edges = this.data.edges.filter((edge) => {
+      return (edge.to() !== index);
+    });
+  }
+  hasEdgeById(id) {
     return !!this.data.edges.find((edge) => {
-      return edge.to() === id;
+      return edge.to_id() === id;
+    });
+  }
+  hasEdgeByIndex(index) {
+    return !!this.data.edges.find((edge) => {
+      return edge.to() === index;
     });
   }
   setJunction() {
